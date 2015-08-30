@@ -4,7 +4,6 @@
 # all the bad stuff, thats me :)
 # still learning
 
-
 ###### VirtualView #######
 # for displaying large amounts of data
 
@@ -96,6 +95,11 @@ except ImportError:
 	__ver__ = 1.5
 
 
+# just for testing
+_image_path = pics_path = os.path.abspath(os.path.join(os.__file__, '../../../../Textures'))
+
+_built_in_images =  os.listdir(_image_path)
+
 # for tableview style...will expand on this later
 # i think will use a list of named tuples. Column should include, width, alignment, possibly font etc.
 table_def = [('Name'), ('Company'), ('User Name'), ('CT')]
@@ -112,7 +116,7 @@ def rand_image():
 	# just return an image from, a list (subset)
 	# of pythonista built images.
 	# testing/demo purposes
-	return ui.Image.named(images[randint(0,len(images) -1)])
+	return ui.Image.named(random.choice(_built_in_images))
 
 def inset_frame(f, left, top, w, h):
 		return (f[0] + left, f[1] + top, f[2] + w, f[3] + h)
@@ -127,15 +131,14 @@ _add_table_header = False
 
 
 
-class RandomImage(object):
+class PythonistaImages(object):
 	def __init__(self):
 		pics_path = os.path.abspath(os.path.join(os.__file__, '../../../../Textures'))
 
 		self.images = os.listdir(pics_path)
 		
-	def get_image(self):
-		# just testing
-		ui.Image.named(random.choice(self.images)).show()
+	def get_random_image(self):
+		return ui.Image.named(random.choice(self.images))
 
 # cell we are using in the VirtualView
 class TestCellVirtualViewCell(ui.View , CellBase):
@@ -144,7 +147,7 @@ class TestCellVirtualViewCell(ui.View , CellBase):
 		
 		self.add_item_id_label()
 
-# cellwe are using as a standalone, so to speak!		 
+# cell we are using as a standalone, so to speak!		 
 class TestCellFreeStanding(ui.View , CellBase):
 	def __init__(self, w, h, item_index, Threaded = False, auto_start_thread =True):
 		CellBase.__init__(self, w, h , item_index, threaded = Threaded, thread_auto_start = auto_start_thread)
@@ -153,9 +156,32 @@ class TestCellFreeStanding(ui.View , CellBase):
 	def cell_clicked(self):
 		self.start_thread()
 
-
+# cell we are using in the VirtualView
+class TestCellVirtualViewCell2(ui.View , CellBase):
+	def __init__(self, w, h, item_index, Threaded = False, auto_start_thread =True):
+		CellBase.__init__(self, w, h , item_index, threaded = Threaded, thread_auto_start = auto_start_thread)
+		
+		#self.add_item_id_label()
+	
+	def create_cell_contents(self):
+		cust_cell = ui.load_view('mycell1')
+		self.add_subview(cust_cell)
+		cust_cell['lb'].text = str(time.time())
+		cust_cell['img1'].image = rand_image()
+		
+		cust_cell['img2'].image = rand_image()
+		#img= ui.ImageView(name = 'img', frame = self.frame)
+		#self.add_subview(img)
+		
+	def fetch_data(self):
+		if self.event.is_set():
+			return
+		#self['img'].image = rand_image()
+		
+	
+		
 class VirtualView(ui.View):
-	def __init__(self, w, h, item_size, buf_size = 0, data_provider = None, use_threaded_cell = False):
+	def __init__(self, w, h, item_size, cell_class, buf_size = 0, data_provider = None, use_threaded_cell = False):
 
 		"""
 		A VirtualView for displaying large
@@ -181,6 +207,9 @@ class VirtualView(ui.View):
 		# of items, its resized to be able to hold
 		# at least one screen of items
 		self.buf_size = buf_size
+		
+		
+		self.cell_class = cell_class
 
 		# a list of VirtualCell objects, the number of
 		# buffered Cells, dedends on bufsize
@@ -403,7 +432,9 @@ class VirtualView(ui.View):
 		# subviews of the scrollview. once the buffer
 		# is full, the oldest cell is removed from
 		# the scrollview.subviews
-		cell = TestCellVirtualViewCell(self.item_width, self.item_height, item_index, Threaded = self.threaded_cell)
+		#cell = TestCellVirtualViewCell2(self.item_width, self.item_height, item_index, Threaded = self.threaded_cell)
+		
+		cell = self.cell_class(self.item_width, self.item_height, item_index, Threaded = self.threaded_cell)
 		
 		self.created_cells += 1	# debug
 
@@ -602,10 +633,10 @@ def VirtualViewTest( w, h, data_provider,demo_type,  use_stress = False, present
 	else:
 		return
 	
-	vv = VirtualView(w, h,  _item_size, _buf_size, data_provider = data_provider , use_threaded_cell = True)
+	vv = VirtualView(w, h,  _item_size, TestCellVirtualViewCell2,  _buf_size, data_provider = data_provider , use_threaded_cell = True)
 	vv.present(present)
 	if use_stress:
-		Stress(vv, delay = 1.5)
+		Stress(vv, delay = .2)
 	
 def StandAloneTest(w, h, present):
 	v = ui.View(frame = (0,0,w, h))
@@ -632,11 +663,10 @@ if __name__ == '__main__':
 	# for the repo, do differently...
 	w,h = ui.get_screen_size()
 	
-	
 	__STANDALONE_TEST = False
 	if __STANDALONE_TEST:
 		StandAloneTest(w, h, _present)
 	else:
 		dp = DataProvider(rec_count = 100000)
-		# only 
-		VirtualViewTest(w,h, dp, demo_type = 'row', use_stress = True, present = _present)
+		# only support 'image' and 'row', demo_type
+		VirtualViewTest(w,h, dp, demo_type = 'image', use_stress = True, present = _present)
