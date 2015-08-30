@@ -32,16 +32,19 @@ class CellBase(object):
 		# if we are threaded, and we have a thread that
 		# is alive, bug out. if it made sense, these 
 		# exta request could be queued. will try to get
-		# going properly first :)
+		# this going properly first :)
 		if self.threading:
 			if self.thread:
 				if self.thread.isAlive():
-					print 'thread failed - thread still running'
+					print 'thread failed - thread still running' # debug
 					return
 					
 			# Was going to try and resuse the thread.
 			# apprently, you cant. at least try to clean
 			# it up
+			# i will look at using thread 'with thread'..
+			# apprently the Threading module supports
+			# the cobtext manager. i need to read more
 			if self.thread:
 				self.thread = None
 				
@@ -143,7 +146,7 @@ class CellBase(object):
 		self.cell_clicked()
 		
 	def cell_clicked(self):
-		print self.item_index
+		print self.item_index #debug
 		pass
 		
 	# explicity call this method, to free up
@@ -194,7 +197,10 @@ class CellBase(object):
 		
 	
 	# if you need to release memory/resources in the 
-	# child, override this method. Its called 
+	# child, override this method. Its called from
+	# inside the release method. threads are stopped
+	# and cleaned up, all views are still avaliable
+	# and released after this method returns.
 	def user_release(self):
 		pass
 		
