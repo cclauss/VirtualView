@@ -9,21 +9,6 @@
 # for displaying large amounts of data
 
 
-# needed for 1.6 at the moment, if importing from same dir
-'''
-import sys
-if '.' not in sys.path:
-    sys.path.insert(0, '.')
-   
-'''
-
-# using Faker to demo....data
-from faker import Faker
-fake = Faker()
-
-import time, os
-from time import strftime
-
 '''
 	
 	17 Aug 2015
@@ -86,19 +71,21 @@ from time import strftime
 '''
 
 
-import ui
+import time, os, sys
 from random import randint
 import random
-import time, sys
-import console
 
 import threading
 import requests
 from bs4 import BeautifulSoup
 import urllib2
 
+import ui, console
+
 # CellBaseClass.py
 from CellBaseClass import CellBase
+
+from DataProvider import DataProvider
 
 # determining if Phytonista 1.5 or 1.6xxx
 __ver__ = 0
@@ -166,46 +153,6 @@ class TestCellFreeStanding(ui.View , CellBase):
 	def cell_clicked(self):
 		self.start_thread()
 
-# this is a mess. just wanted to get a data provider
-# so not to blog the VirtualView down with data
-# collecting... for me requies a lot of thought
-class DataProvider(object):
-	def __init__(self, rec_count = 0):
-		
-		# regardless, self.rec_count has to represent
-		# the number rows of data. is the only real
-		# count that can be relied upon!
-		self.rec_count = rec_count
-		
-		
-		self.data_list = []
-		self.data_loaded = False
-		self.data_row_proc = self._get_data_row_faker
-		
-	def data_load(self):
-		pass
-		
-	def get_nth_record(self, record_index):
-		if record_index > self.rec_count:
-			# guess i should raise an error here
-			return ''
-		# call the func pointed to by self.data_row_proc
-		# if the class gets more complex, aviod a lot
-		# of logic code here. could potentially change
-		# func during exec if it made sense.
-		return self.data_row_proc(record_index)	
-		
-	@property
-	def num_records(self):
-		return(self.rec_count)
-	
-	# methods that actually return the data
-	def _get_data_row_faker(self, record_index):
-		return  [fake.name(), fake.company(), fake.user_name(), fake.country_code()]
-		
-	def release(self):
-		pass
-	
 
 class VirtualView(ui.View):
 	def __init__(self, w, h, item_size, buf_size = 0, data_provider = None, use_threaded_cell = False):
@@ -679,7 +626,7 @@ if __name__ == '__main__':
 		# because i can't see!!
 		console.set_font('Menlo', 22)
 	
-	_present = ''
+	_present = 'sheet'
 	# stick with 1.5 sizes at the moment	
 	#w , h = 540, 576
 	# for the repo, do differently...
@@ -692,4 +639,4 @@ if __name__ == '__main__':
 	else:
 		dp = DataProvider(rec_count = 100000)
 		# only 
-		VirtualViewTest(w,h, dp, demo_type = 'image', use_stress = True, present = _present)
+		VirtualViewTest(w,h, dp, demo_type = 'row', use_stress = True, present = _present)
