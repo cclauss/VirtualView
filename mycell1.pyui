@@ -1,0 +1,79 @@
+[
+  {
+    "selected" : false,
+    "frame" : "{{0, 0}, {128, 128}}",
+    "class" : "View",
+    "nodes" : [
+      {
+        "selected" : false,
+        "frame" : "{{0, 0}, {128, 32}}",
+        "class" : "Label",
+        "nodes" : [
+
+        ],
+        "attributes" : {
+          "font_name" : "<System-Bold>",
+          "frame" : "{{-11, 48}, {150, 32}}",
+          "uuid" : "3E0C01E5-B168-43B0-BBFE-E32AD67C6B8A",
+          "text" : "A label",
+          "alignment" : "center",
+          "class" : "Label",
+          "font_size" : 18,
+          "name" : "lb"
+        }
+      },
+      {
+        "selected" : false,
+        "frame" : "{{0, 33}, {64, 80}}",
+        "class" : "ImageView",
+        "nodes" : [
+
+        ],
+        "attributes" : {
+          "frame" : "{{14, 14}, {100, 100}}",
+          "class" : "ImageView",
+          "name" : "img1",
+          "uuid" : "4EF50649-1D68-420B-90EA-FC5AB7F19069"
+        }
+      },
+      {
+        "selected" : false,
+        "frame" : "{{64, 33}, {64, 80}}",
+        "class" : "ImageView",
+        "nodes" : [
+
+        ],
+        "attributes" : {
+          "frame" : "{{14, 14}, {100, 100}}",
+          "class" : "ImageView",
+          "name" : "img2",
+          "uuid" : "4EF50649-1D68-420B-90EA-FC5AB7F19069"
+        }
+      },
+      {
+        "selected" : false,
+        "frame" : "{{0, 112}, {128, 16}}",
+        "class" : "SegmentedControl",
+        "nodes" : [
+
+        ],
+        "attributes" : {
+          "class" : "SegmentedControl",
+          "frame" : "{{4, 50}, {120, 29}}",
+          "uuid" : "267A9227-3499-4256-B942-777F861CB0E0",
+          "segments" : "cat a|catb",
+          "name" : "segmentedcontrol1",
+          "flex" : "LR"
+        }
+      }
+    ],
+    "attributes" : {
+      "flex" : "",
+      "enabled" : true,
+      "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+      "name" : "",
+      "tint_color" : "RGBA(0.000000,0.478000,1.000000,1.000000)",
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)"
+    }
+  }
+]
